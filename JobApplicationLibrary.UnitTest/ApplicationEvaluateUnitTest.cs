@@ -1,4 +1,6 @@
 ﻿using JobApplicationLibrary.Models;
+using JobApplicationLibrary.Services;
+using Moq;
 
 namespace JobApplicationLibrary.UnitTest;
 
@@ -13,7 +15,7 @@ public class ApplicationEvaluateUnitTest
     {
         // Arrange
         // Setting up the test objects
-        var evaluator = new ApplicationEvaluator();
+        var evaluator = new ApplicationEvaluator(null);
         var form = new JobApplication()
         {
             Applicant = new Applicant()
@@ -36,8 +38,13 @@ public class ApplicationEvaluateUnitTest
     public void Application_WithNoTechStack_TransferredToAutoRejected()
     {
         // Arrange
-        // Setting up the test objects
-        var evaluator = new ApplicationEvaluator();
+
+        // Moq library lets me create the scenario i want to test.
+        var mockValidator = new Mock<IIdentityValidator>();
+        // If IsValid method under IIdentityValidator comes with any string value, then make it return "true"
+        mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true);
+
+        var evaluator = new ApplicationEvaluator(mockValidator.Object);
         var form = new JobApplication()
         {
             Applicant = new Applicant() { Age = 19},
@@ -45,11 +52,9 @@ public class ApplicationEvaluateUnitTest
         };
 
         // Act
-        // Invoking the method under test
         var appResult = evaluator.Evaluate(form);
 
         // Assert
-        // Verifying that the outcome matches expectations.
         Assert.That(appResult, Is.EqualTo(ApplicationResult.AutoRejected));
 
     }
@@ -57,8 +62,11 @@ public class ApplicationEvaluateUnitTest
     public void Application_WithTechStackOver75P_TransferredToAutoAccepted()
     {
         // Arrange
-        // Setting up the test objects
-        var evaluator = new ApplicationEvaluator();
+        var mockValidator = new Mock<IIdentityValidator>();
+        mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true);
+
+
+        var evaluator = new ApplicationEvaluator(mockValidator.Object);
         var form = new JobApplication()
         {
             Applicant = new Applicant() { Age = 19},
@@ -70,12 +78,31 @@ public class ApplicationEvaluateUnitTest
         };
 
         // Act
-        // Invoking the method under test
         var appResult = evaluator.Evaluate(form);
 
         // Assert
-        // Verifying that the outcome matches expectations.
         Assert.That(appResult, Is.EqualTo(ApplicationResult.AutoAccepted));
+
+    }
+    [Test]
+    public void Application_WithInValidIdentityNumber_TransferredToHR()
+    {
+        // Arrange
+        var mockValidator = new Mock<IIdentityValidator>();
+        mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(false);
+
+
+        var evaluator = new ApplicationEvaluator(mockValidator.Object);
+        var form = new JobApplication()
+        {
+            Applicant = new Applicant() { Age = 19 }
+        };
+
+        // Act
+        var appResult = evaluator.Evaluate(form);
+
+        // Assert
+        Assert.That(appResult, Is.EqualTo(ApplicationResult.TransferredToHR));
 
     }
 }
