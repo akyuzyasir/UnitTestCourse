@@ -28,4 +28,5 @@
     * Arrange - Action - Assertion Blocks
     * Mock - Moq
     * FluentAssertion
+    * Tools / Code Snippets Manager
  */
