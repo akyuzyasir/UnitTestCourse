@@ -20,6 +20,10 @@ public class ApplicationEvaluator
         if(form.Applicant.Age < minAge)
             return ApplicationResult.AutoRejected;
 
+        if (form.OfficeLocation != "ISTANBUL")
+            return ApplicationResult.TransferredToCTO;
+        
+        var connectionSucceed = _identityValidator.CheckConnectionToRemoteServer();
         var validIdentity = _identityValidator.IsValid(form.Applicant.IdentityNumber);
 
         if (!validIdentity)

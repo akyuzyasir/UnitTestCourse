@@ -88,8 +88,9 @@ public class ApplicationEvaluateUnitTest
     public void Application_WithInValidIdentityNumber_TransferredToHR()
     {
         // Arrange
-        var mockValidator = new Mock<IIdentityValidator>();
+        var mockValidator = new Mock<IIdentityValidator>(MockBehavior.Strict);
         mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(false);
+        mockValidator.Setup(i => i.CheckConnectionToRemoteServer()).Returns(false);
 
 
         var evaluator = new ApplicationEvaluator(mockValidator.Object);
