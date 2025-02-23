@@ -30,3 +30,8 @@
     * FluentAssertion
     * Tools / Code Snippets Manager
  */
+
+/*
+    MockBehavior.Strict : Strict mode is used to ensure that the method is called with the expected parameters. If the method is not called with the expected parameters, the test will fail.
+    MockBehavior.Loose : Loose mode is used to ensure that the method is called with the expected parameters. If the method is not called with the expected parameters, the parameters will be returned as default values and the test will not fail.
+ */
