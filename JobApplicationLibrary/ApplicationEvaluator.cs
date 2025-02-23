@@ -22,14 +22,10 @@ public class ApplicationEvaluator
 
         if (form.OfficeLocation != "ISTANBUL")
             return ApplicationResult.TransferredToCTO;
-<<<<<<< Updated upstream
-        
-=======
 
-        if(_identityValidator.CountryDataProvider.CountryData.Country != "TURKEY")
+        if(_identityValidator.Country != "TURKEY")
             return ApplicationResult.TransferredToCTO;
 
->>>>>>> Stashed changes
         var connectionSucceed = _identityValidator.CheckConnectionToRemoteServer();
         var validIdentity = _identityValidator.IsValid(form.Applicant.IdentityNumber);
 
