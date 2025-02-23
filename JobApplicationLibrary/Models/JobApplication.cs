@@ -7,4 +7,6 @@ public class JobApplication
     public List<string> TechStackList { get; set; }
 
     public string OfficeLocation { get; set; }
+
+
 }

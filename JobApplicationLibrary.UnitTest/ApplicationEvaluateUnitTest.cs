@@ -43,12 +43,16 @@ public class ApplicationEvaluateUnitTest
         var mockValidator = new Mock<IIdentityValidator>();
         // If IsValid method under IIdentityValidator comes with any string value, then make it return "true"
         mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true);
+        mockValidator.Setup(i => i.Country).Returns("TURKEY");
+
 
         var evaluator = new ApplicationEvaluator(mockValidator.Object);
         var form = new JobApplication()
         {
             Applicant = new Applicant() { Age = 19},
-            TechStackList = new List<string>() { "" }
+            TechStackList = new List<string>() { "" },
+            OfficeLocation = "ISTANBUL"
+
         };
 
         // Act
@@ -64,6 +68,8 @@ public class ApplicationEvaluateUnitTest
         // Arrange
         var mockValidator = new Mock<IIdentityValidator>();
         mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true);
+        mockValidator.Setup(i => i.Country).Returns("TURKEY");
+
 
 
         var evaluator = new ApplicationEvaluator(mockValidator.Object);
@@ -74,7 +80,9 @@ public class ApplicationEvaluateUnitTest
             { 
                 "C#", "RabbitMQ", "Microservice", "Visual Studio" 
             },
-            YearsOfExperience = 16
+            YearsOfExperience = 16,
+            OfficeLocation = "ISTANBUL"
+
         };
 
         // Act
@@ -91,12 +99,14 @@ public class ApplicationEvaluateUnitTest
         var mockValidator = new Mock<IIdentityValidator>(MockBehavior.Strict);
         mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(false);
         mockValidator.Setup(i => i.CheckConnectionToRemoteServer()).Returns(false);
+        mockValidator.Setup(i => i.Country).Returns("TURKEY");
 
 
         var evaluator = new ApplicationEvaluator(mockValidator.Object);
         var form = new JobApplication()
         {
-            Applicant = new Applicant() { Age = 19 }
+            Applicant = new Applicant() { Age = 19 },
+            OfficeLocation = "ISTANBUL"
         };
 
         // Act
@@ -104,6 +114,49 @@ public class ApplicationEvaluateUnitTest
 
         // Assert
         Assert.That(appResult, Is.EqualTo(ApplicationResult.TransferredToHR));
+
+    }
+    [Test]
+    public void Application_WithOfficeLocation_TransferredToCTO()
+    {
+        // Arrange
+        var mockValidator = new Mock<IIdentityValidator>();
+
+
+        var evaluator = new ApplicationEvaluator(mockValidator.Object);
+        var form = new JobApplication()
+        {
+            Applicant = new Applicant() { Age = 19 },
+            OfficeLocation = "ANKARA"
+        };
+
+        // Act
+        var appResult = evaluator.Evaluate(form);
+
+        // Assert
+        Assert.That(appResult, Is.EqualTo(ApplicationResult.TransferredToCTO));
+
+    }
+    [Test]
+    public void Application_WithoutCountry_TransferredToCTO()
+    {
+        // Arrange
+        var mockValidator = new Mock<IIdentityValidator>();
+        mockValidator.Setup(i => i.Country).Returns("SPAIN");
+
+
+        var evaluator = new ApplicationEvaluator(mockValidator.Object);
+        var form = new JobApplication()
+        {
+            Applicant = new Applicant() { Age = 19 },
+            OfficeLocation = "ANKARA"
+        };
+
+        // Act
+        var appResult = evaluator.Evaluate(form);
+
+        // Assert
+        Assert.That(appResult, Is.EqualTo(ApplicationResult.TransferredToCTO));
 
     }
 }
