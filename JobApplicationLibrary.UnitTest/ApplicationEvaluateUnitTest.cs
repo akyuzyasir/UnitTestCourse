@@ -106,4 +106,49 @@ public class ApplicationEvaluateUnitTest
         Assert.That(appResult, Is.EqualTo(ApplicationResult.TransferredToHR));
 
     }
+<<<<<<< Updated upstream
+=======
+    [Test]
+    public void Application_WithOfficeLocation_TransferredToCTO()
+    {
+        // Arrange
+        var mockValidator = new Mock<IIdentityValidator>();
+
+
+        var evaluator = new ApplicationEvaluator(mockValidator.Object);
+        var form = new JobApplication()
+        {
+            Applicant = new Applicant() { Age = 19 },
+            OfficeLocation = "ANKARA"
+        };
+
+        // Act
+        var appResult = evaluator.Evaluate(form);
+
+        // Assert
+        Assert.That(appResult, Is.EqualTo(ApplicationResult.TransferredToCTO));
+
+    }
+    [Test]
+    public void Application_WithoutCountry_TransferredToCTO()
+    {
+        // Arrange
+        var mockValidator = new Mock<IIdentityValidator>();
+
+
+        var evaluator = new ApplicationEvaluator(mockValidator.Object);
+        var form = new JobApplication()
+        {
+            Applicant = new Applicant() { Age = 19 },
+            OfficeLocation = "ANKARA"
+        };
+
+        // Act
+        var appResult = evaluator.Evaluate(form);
+
+        // Assert
+        Assert.That(appResult, Is.EqualTo(ApplicationResult.TransferredToCTO));
+
+    }
+>>>>>>> Stashed changes
 }
