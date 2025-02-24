@@ -23,7 +23,7 @@ public class ApplicationEvaluator
         if (form.OfficeLocation != "ISTANBUL")
             return ApplicationResult.TransferredToCTO;
 
-        if(_identityValidator.Country != "TURKEY")
+        if(_identityValidator.CountryDataProvider.CountryData.Country != "TURKEY")
             return ApplicationResult.TransferredToCTO;
 
         var connectionSucceed = _identityValidator.CheckConnectionToRemoteServer();

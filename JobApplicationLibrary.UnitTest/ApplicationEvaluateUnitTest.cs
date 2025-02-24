@@ -43,13 +43,16 @@ public class ApplicationEvaluateUnitTest
         var mockValidator = new Mock<IIdentityValidator>();
         // If IsValid method under IIdentityValidator comes with any string value, then make it return "true"
         mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true);
-        mockValidator.Setup(i => i.Country).Returns("TURKEY");
+        //mockValidator.Setup(i => i.Country).Returns("TURKEY");
+        mockValidator.DefaultValue = DefaultValue.Mock;
+        mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("TURKEY");
+
 
 
         var evaluator = new ApplicationEvaluator(mockValidator.Object);
         var form = new JobApplication()
         {
-            Applicant = new Applicant() { Age = 19},
+            Applicant = new Applicant() { Age = 19 },
             TechStackList = new List<string>() { "" },
             OfficeLocation = "ISTANBUL"
 
@@ -68,17 +71,18 @@ public class ApplicationEvaluateUnitTest
         // Arrange
         var mockValidator = new Mock<IIdentityValidator>();
         mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(true);
-        mockValidator.Setup(i => i.Country).Returns("TURKEY");
-
+        //mockValidator.Setup(i => i.Country).Returns("TURKEY");
+        mockValidator.DefaultValue = DefaultValue.Mock;
+        mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("TURKEY");
 
 
         var evaluator = new ApplicationEvaluator(mockValidator.Object);
         var form = new JobApplication()
         {
-            Applicant = new Applicant() { Age = 19},
-            TechStackList = new List<string>() 
-            { 
-                "C#", "RabbitMQ", "Microservice", "Visual Studio" 
+            Applicant = new Applicant() { Age = 19 },
+            TechStackList = new List<string>()
+            {
+                "C#", "RabbitMQ", "Microservice", "Visual Studio"
             },
             YearsOfExperience = 16,
             OfficeLocation = "ISTANBUL"
@@ -96,10 +100,12 @@ public class ApplicationEvaluateUnitTest
     public void Application_WithInValidIdentityNumber_TransferredToHR()
     {
         // Arrange
-        var mockValidator = new Mock<IIdentityValidator>(MockBehavior.Strict);
+        var mockValidator = new Mock<IIdentityValidator>();
         mockValidator.Setup(i => i.IsValid(It.IsAny<string>())).Returns(false);
         mockValidator.Setup(i => i.CheckConnectionToRemoteServer()).Returns(false);
-        mockValidator.Setup(i => i.Country).Returns("TURKEY");
+        //mockValidator.Setup(i => i.Country).Returns("TURKEY");
+        mockValidator.DefaultValue = DefaultValue.Mock; // This line is added to prevent null reference exception
+        mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("TURKEY");
 
 
         var evaluator = new ApplicationEvaluator(mockValidator.Object);
@@ -142,8 +148,21 @@ public class ApplicationEvaluateUnitTest
     {
         // Arrange
         var mockValidator = new Mock<IIdentityValidator>();
-        mockValidator.Setup(i => i.Country).Returns("SPAIN");
+        //mockValidator.Setup(i => i.Country).Returns("SPAIN");
+        #region Short Setup
+        mockValidator.Setup(i => i.CountryDataProvider.CountryData.Country).Returns("SPAIN");
 
+        #endregion
+        #region Long Setup
+        //var mockCountryData = new Mock<ICountryData>();
+        //mockCountryData.Setup(i => i.Country).Returns("SPAIN");
+
+        //var mockCountryDataProvider = new Mock<ICountryDataProvider>();
+        //mockCountryDataProvider.Setup(i => i.CountryData).Returns(mockCountryData.Object);
+
+        //mockValidator.Setup(i => i.CountryDataProvider).Returns(mockCountryDataProvider.Object);
+
+        #endregion
 
         var evaluator = new ApplicationEvaluator(mockValidator.Object);
         var form = new JobApplication()
